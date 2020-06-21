@@ -169,6 +169,12 @@ Mode *Copter::mode_from_mode_num(const Mode::Number mode)
             break;
 #endif
 
+// #if MODE_STARWARS_ENABLED == ENABLED
+        case Mode::Number::STARWARS:
+            ret = &mode_starwars;
+            break;
+// #endif
+
         default:
             break;
     }
