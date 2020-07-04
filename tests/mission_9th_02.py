@@ -42,6 +42,7 @@ cmds.clear()
 print(" Define/add new commands.")
 cmds.add(Command( 0, 0, 0, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, 0, 0, 0, 0, 0, 35.68407150, 139.75523470, targetAltitude))
 cmds.add(Command( 0, 0, 0, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, 0, 0, 0, 0, 0, 35.68612810, 139.75536350, targetAltitude))
+cmds.add(Command( 0, 0, 0, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, 0, 0, 0, 0, 0, 35.68612810, 139.75536350, targetAltitude))
 
 print(" Upload new commands to vehicle")
 cmds.upload()
@@ -55,10 +56,10 @@ vehicle.mode = VehicleMode("AUTO")
 
 while True:
     nextwaypoint=vehicle.commands.next
-    print(nextwaypoint)
+    print("Next waypoint is {}".format(nextwaypoint))
 
-    if nextwaypoint==3: #Dummy waypoint - as soon as we reach waypoint 4 this is true and we exit.
-        print("Exit 'standard' mission when start heading to final waypoint (2)")
+    if nextwaypoint==3: #Dummy waypoint - as soon as we reach the waypoint, we exit.
+        print("Exit 'standard' mission when start heading to final waypoint")
         break;
     time.sleep(1)
 
