@@ -20,7 +20,8 @@ if not connection_string:
     connection_string = sitl.connection_string()
 
 print("\nConnecting to vehicle on: %s" % connection_string)
-vehicle = connect('127.0.0.1:14550', wait_ready=True)
+# vehicle = connect('127.0.0.1:14550', wait_ready=True)
+vehicle = connect('tcp:127.0.0.1:5762', wait_ready=True)
 
 vehicle.wait_ready('autopilot_version')
 
@@ -149,7 +150,7 @@ cmds.upload()
 vehicle.mode = VehicleMode("AUTO")
 time.sleep(1)
 
-while vehicle.commands.next < lastWP + 1:
+while vehicle.commands.next < lastWP:
     print(" Waiting mission complete %d" % vehicle.commands.next)
     time.sleep(1)
 
