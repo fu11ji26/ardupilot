@@ -142,7 +142,8 @@ cmds.clear()
 for command in missionList:
     cmds.add(command)
 print(' Upload mission')
-vehicle.commands.upload()
+cmds.upload()
+# -------------------------------------------------------------
 
 # start mission
 vehicle.mode = VehicleMode("AUTO")
