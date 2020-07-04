@@ -20,8 +20,13 @@ vehicle.arm(wait=True, timeout=5)
 print("Armed state is {}".format(vehicle.armed))
 
 # Take off (Altitude, error, timeout)
-print("Take off!!")
-vehicle.wait_simple_takeoff(targetAltitude, 0.5, 30)
+try:
+    vehicle.wait_simple_takeoff(targetAltitude, 0.5, 30)
+    print("Take off!!")
+except TimeoutError as takeoffTimeout:
+    print("Takeoff is timeout!!")
+    vehicle.disarm()
+
 
 # change to LOITER mode
 vehicle.wait_for_mode(loiter)

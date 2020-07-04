@@ -1381,6 +1381,7 @@ protected:
     uint32_t last_log_ms;   // system time of last time desired velocity was logging
 };
 
+
 class ModeZigZag : public Mode {        
 
 public:
@@ -1547,6 +1548,7 @@ private:
 #endif
 
 
+// --------------------------------------------------------------------------
 class ModeStarWars : public Mode {
 
 public:
@@ -1572,3 +1574,4 @@ protected:
 private:
 
 };
+// --------------------------------------------------------------------------
