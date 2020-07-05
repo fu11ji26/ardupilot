@@ -49,7 +49,8 @@ def send_ned_velocity(velocity_x, velocity_y, velocity_z, duration):
     msg = vehicle.message_factory.set_position_target_local_ned_encode(
         0,       # time_boot_ms (not used)
         0, 0,    # target system, target component
-        mavutil.mavlink.MAV_FRAME_LOCAL_NED, # frame
+        # mavutil.mavlink.MAV_FRAME_LOCAL_NED, # Based on home position
+        mavutil.mavlink.MAV_FRAME_BODY_NED, # Based on body frame
         0b0000111111000111, # type_mask (only speeds enabled)
         0, 0, 0, # x, y, z positions (not used)
         velocity_x, velocity_y, velocity_z, # x, y, z velocity in m/s
@@ -61,34 +62,33 @@ def send_ned_velocity(velocity_x, velocity_y, velocity_z, duration):
         vehicle.send_mavlink(msg)
         time.sleep(1)
     
-# Set velocity and duration parameters
-DURATION = 5 #Set duration for each segment.
-NORTH = 2
-SOUTH = -2
-EAST = 2
-WEST = -2
-UP = -1
-DOWN = 1
+# Set parameters
+DURATION = 5
+Forward = 2
+steps = 5
 
-print("take steps path using SET_POSITION_TARGET_LOCAL_NED and velocity parameters")
-steps = 3
+print("Take steps path")
 for step in range(steps):
 
     print("Yaw 180 absolute (South)")
     condition_yaw(180)
 
-    print("Velocity South & up")
-    send_ned_velocity(SOUTH,0,UP,DURATION)
-    send_ned_velocity(0,0,0,1)
+    print("Go Forward")
+    send_ned_velocity(Forward,0,0,DURATION)
 
     print("Yaw 270 absolute (West)")
     condition_yaw(270)
 
-    print("Velocity West & down")
-    send_ned_velocity(0,WEST,DOWN,DURATION)
-    send_ned_velocity(0,0,0,1)
+    print("Go Forward")
+    send_ned_velocity(Forward,0,0,DURATION)
 
-##############################################################################
+print("Draw a pseudo circle path")
+for step in range(steps*2):
+
+    condition_yaw(step*9)
+
+    send_ned_velocity(Forward,0,0,DURATION)
+
 
 print("Return to Launch")
 vehicle.mode = VehicleMode("RTL")
