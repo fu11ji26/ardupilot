@@ -41,9 +41,11 @@ def load_waypoint_from_url(url):
     for line in v:
       waypoint = []
       splitted = line.split('\t')
-      for i in range(0, 3):
+      for i in range(0, 4):
+      # for i in range(0, 3):
         waypoint.append(int(splitted[i]))
-      for i in range(4, 10):
+      for i in range(4, 11):
+      # for i in range(4, 10):
         waypoint.append(float(splitted[i]))
       waypoint.append(int(splitted[11]))
       waypoints.append(waypoint)
@@ -134,7 +136,8 @@ pointList = load_waypoint_from_url(url)
 missionList = []
 
 for item in pointList:
-    cmd=Command( 0, 0, 0, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, 0, 0, 0, 0, 0, item[7], item[8], altitude)
+    cmd=Command( 0, 0, 0, item[2], item[3], item[1], item[11], item[4], item[5], item[6], item[7], item[8], item[9], item[10])
+    # cmd=Command( 0, 0, 0, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, 0, 0, 0, 0, 0, item[7], item[8], altitude)
     missionList.append(cmd)
 
 cmds = vehicle.commands
@@ -150,8 +153,8 @@ cmds.upload()
 vehicle.mode = VehicleMode("AUTO")
 time.sleep(1)
 
-while vehicle.commands.next < lastWP:
-    print(" Waiting mission complete %d" % vehicle.commands.next)
+while cmds.next < lastWP + 1:
+    print(" Waiting mission complete {}".format(cmds.next))
     time.sleep(1)
 
 vehicle.mode = VehicleMode("RTL")
