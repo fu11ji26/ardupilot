@@ -46,7 +46,9 @@ void ModeStarWars::run()
     now = AP_HAL::millis();
     // change parameters for 5 seconds
     if (now - init_now < 5000) {
-        target_roll = 2000;
+        // target_roll = 2000;
+        // attitude_control->input_rate_bf_roll_pitch_yaw(100, 0.0, 0.0);
+        attitude_control->input_euler_angle_roll_pitch_yaw(3000, 0.0, 0.0, false);
     }
 
     // get pilot's desired yaw rate
