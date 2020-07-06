@@ -44,11 +44,10 @@ void ModeStarWars::run()
     // update times ------------------------------------------------------------
     uint32_t now;
     now = AP_HAL::millis();
-    // change parameters for 5 seconds
-    if (now - init_now < 5000) {
-        // target_roll = 2000;
-        // attitude_control->input_rate_bf_roll_pitch_yaw(100, 0.0, 0.0);
-        attitude_control->input_euler_angle_roll_pitch_yaw(3000, 0.0, 0.0, false);
+    // change parameters for 2 seconds
+    if (now - init_now < 2000) {
+        target_roll = 8000;
+        // attitude_control->input_euler_angle_roll_pitch_yaw(3000, 0.0, 0.0, false);
     }
 
     // get pilot's desired yaw rate
@@ -100,12 +99,13 @@ void ModeStarWars::run()
     
         // display every 2 seconds
         static uint32_t last_time;
-        float ch01 = RC_Channels_Copter::get_radio_in(CH_1);
+        // float ch01 = RC_Channels_Copter::get_radio_in(CH_1);
         if (now - last_time > 2000) {
             last_time = now;
-            gcs().send_text(MAV_SEVERITY_WARNING, "ch1(%f)", ch01);
+            // gcs().send_text(MAV_SEVERITY_WARNING, "ch1(%f)", ch01);
             gcs().send_text(MAV_SEVERITY_WARNING, "now:%d", now/1000);
             gcs().send_text(MAV_SEVERITY_WARNING, "Roll(%3.0f),Pitch(%3.0f)", target_roll/100, target_pitch/100);
+            // gcs().send_text(MAV_SEVERITY_WARNING, "Roll(%3.0f),Pitch(%3.0f)", roll/100, pitch/100);
         }
 
         motors->set_desired_spool_state(AP_Motors::DesiredSpoolState::THROTTLE_UNLIMITED);
