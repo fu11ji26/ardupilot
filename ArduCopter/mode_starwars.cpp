@@ -5,20 +5,22 @@
  * Init and run calls for althold, flight mode
  */
 
-// define start time --------------------------------------------
-uint32_t init_now;
+// variable definitions --------------------------------------------
+uint32_t init_time;
+uint32_t now;
+uint32_t last_time = 0;
+int ch_flg = 0;
 
 // althold_init - initialise althold controller
 bool ModeStarWars::init(bool ignore_checks)
 {
+    // displays message to start StarWars mode
+    gcs().send_text(MAV_SEVERITY_INFO, "StarWars MODE START!");
     // initialise position and desired velocity
     if (!pos_control->is_active_z()) {
         pos_control->set_alt_target_to_current_alt();
         pos_control->set_desired_velocity_z(inertial_nav.get_velocity_z());
     }
-
-// measure the time only once -------------------------------
-    init_now = AP_HAL::millis();
 
     return true;
 }
@@ -40,15 +42,6 @@ void ModeStarWars::run()
     float target_roll, target_pitch;
 
     get_pilot_desired_lean_angles(target_roll, target_pitch, copter.aparm.angle_max, attitude_control->get_althold_lean_angle_max());
-
-    // update times ------------------------------------------------------------
-    uint32_t now;
-    now = AP_HAL::millis();
-    // change parameters for 2 seconds
-    if (now - init_now < 2000) {
-        target_roll = 8000;
-        // attitude_control->input_euler_angle_roll_pitch_yaw(3000, 0.0, 0.0, false);
-    }
 
     // get pilot's desired yaw rate
     float target_yaw_rate = get_pilot_desired_yaw_rate(channel_yaw->get_control_in());
@@ -97,17 +90,6 @@ void ModeStarWars::run()
 
     case AltHold_Flying:
     
-        // display every 2 seconds
-        static uint32_t last_time;
-        // float ch01 = RC_Channels_Copter::get_radio_in(CH_1);
-        if (now - last_time > 2000) {
-            last_time = now;
-            // gcs().send_text(MAV_SEVERITY_WARNING, "ch1(%f)", ch01);
-            gcs().send_text(MAV_SEVERITY_WARNING, "now:%d", now/1000);
-            gcs().send_text(MAV_SEVERITY_WARNING, "Roll(%3.0f),Pitch(%3.0f)", target_roll/100, target_pitch/100);
-            // gcs().send_text(MAV_SEVERITY_WARNING, "Roll(%3.0f),Pitch(%3.0f)", roll/100, pitch/100);
-        }
-
         motors->set_desired_spool_state(AP_Motors::DesiredSpoolState::THROTTLE_UNLIMITED);
 
 #if AC_AVOID_ENABLED == ENABLED
@@ -122,6 +104,40 @@ void ModeStarWars::run()
         target_climb_rate = get_avoidance_adjusted_climbrate(target_climb_rate);
 
         pos_control->set_alt_target_from_climb_rate_ff(target_climb_rate, G_Dt, false);
+
+
+        // start StarWars mode by switching on rc channel ---------------------------------------
+        if( (ch_flg == 0) && (RC_Channels_Copter::get_radio_in(CH_9) > 1600) ){
+            init_time = AP_HAL::millis();
+            ch_flg = 1;
+        } else if( (ch_flg == 1) && (RC_Channels_Copter::get_radio_in(CH_9) < 1600) ){
+            ch_flg = 0;
+        }
+
+        if (ch_flg == 1) {
+
+            now = AP_HAL::millis();
+
+            // mission start
+            if (now - init_time < 2000) {
+                target_roll = 0.0f, target_pitch = -3000.0f, target_yaw_rate = 0.0f; 
+                // attitude_control->input_euler_angle_roll_pitch_yaw(8000, 0.0, 0.0, false);
+            } else if (now - init_time < 4000) {
+                target_roll = 6000.0f, target_pitch = -3000.0f, target_yaw_rate = -5000.0f; 
+            } else if (now - init_time < 6000) {
+                target_roll = 0.0f, target_pitch = -3000.0f, target_yaw_rate = 5000.0f; 
+            } 
+            
+            // display every 1 seconds
+            if (now - last_time > 1000) {
+                last_time = now;
+                gcs().send_text(MAV_SEVERITY_WARNING, "now:%d", now/1000);
+                gcs().send_text(MAV_SEVERITY_WARNING, "T-Roll(%3.0f),T-Pitch(%3.0f)", target_roll/100, target_pitch/100);
+            }
+
+        }
+
+
         break;
     }
 
