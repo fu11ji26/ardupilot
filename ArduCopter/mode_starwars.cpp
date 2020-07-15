@@ -119,24 +119,26 @@ void ModeStarWars::run()
             now = AP_HAL::millis();
 
             // mission start
-            if (now - init_time < 2000) {
+            if (now - init_time < 4000) {  // move forward
                 target_roll = 0.0f, target_pitch = -3000.0f, target_yaw_rate = 0.0f; 
-                // attitude_control->input_euler_angle_roll_pitch_yaw(8000, 0.0, 0.0, false);
-            } else if (now - init_time < 4000) {
-                target_roll = 6000.0f, target_pitch = -3000.0f, target_yaw_rate = -5000.0f; 
-            } else if (now - init_time < 6000) {
-                target_roll = 0.0f, target_pitch = -3000.0f, target_yaw_rate = 5000.0f; 
+            } else if (now - init_time < 5000) {  // counter-steering
+                target_roll = 0.0f, target_pitch = -3000.0f, target_yaw_rate = -3000.0f; 
+            } else if (now - init_time < 7000) {  // starwars
+                target_roll = 6000.0f, target_pitch = -3000.0f, target_yaw_rate = -2500.0f; 
+            } else if (now - init_time < 8000) {  // recover attitude
+                target_roll = 0.0f, target_pitch = -3000.0f, target_yaw_rate = 6000.0f; 
+            } else if (now - init_time < 9000) {  // recover directions
+                target_roll = 0.0f, target_pitch = -3000.0f, target_yaw_rate = 3000.0f; 
             } 
             
             // display every 1 seconds
             if (now - last_time > 1000) {
                 last_time = now;
                 gcs().send_text(MAV_SEVERITY_WARNING, "now:%d", now/1000);
-                gcs().send_text(MAV_SEVERITY_WARNING, "T-Roll(%3.0f),T-Pitch(%3.0f)", target_roll/100, target_pitch/100);
+                gcs().send_text(MAV_SEVERITY_WARNING, "Roll(%3.0f),Pitch(%3.0f),YawRate(%3.0f)", target_roll/100, target_pitch/100, target_yaw_rate/100);
             }
 
         }
-
 
         break;
     }
