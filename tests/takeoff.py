@@ -1,20 +1,22 @@
 from dronekit import connect, VehicleMode
 import time
+from pymavlink import mavutil
 
 # connect
-vehicle = connect('127.0.0.1:14550', wait_ready=True)
+connection_string = '127.0.0.1:14550'
+# connection_string = '/dev/ttyS5'
+vehicle = connect(connection_string, wait_ready=False, baud=57600)
 
 # set the target altitude
 targetAltitude = 15
 
 # Arming excecute -> Guided mode, armed = True
 print("Arming motors")
-guided = VehicleMode("GUIDED")
-vehicle.mode = guided
+vehicle.mode = VehicleMode("GUIDED_NOGPS")
 vehicle.armed = True
 
 # Takeoff is enable?
-while not vehicle.armed or vehicle.mode.name != 'GUIDED':
+while not vehicle.armed or vehicle.mode.name != 'GUIDED_NOGPS':
     print("Vehicle not ready...")
     time.sleep(1)
 

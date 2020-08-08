@@ -106,7 +106,7 @@ void ModeStarWars::run()
         pos_control->set_alt_target_from_climb_rate_ff(target_climb_rate, G_Dt, false);
 
 
-        // start StarWars mode by switching on rc channel ---------------------------------------
+// start StarWars mode by switching on rc channel ---------------------------------------
         if( (ch_flg == 0) && (RC_Channels_Copter::get_radio_in(CH_9) > 1600) ){
             init_time = AP_HAL::millis();
             ch_flg = 1;
@@ -134,8 +134,8 @@ void ModeStarWars::run()
             // display every 1 seconds
             if (now - last_time > 1000) {
                 last_time = now;
-                gcs().send_text(MAV_SEVERITY_WARNING, "now:%d", now/1000);
-                gcs().send_text(MAV_SEVERITY_WARNING, "Roll(%3.0f),Pitch(%3.0f),YawRate(%3.0f)", target_roll/100, target_pitch/100, target_yaw_rate/100);
+                gcs().send_text(MAV_SEVERITY_WARNING, "now:%lu", (unsigned long)now/1000);
+                gcs().send_text(MAV_SEVERITY_WARNING, "Roll(%3.0f),Pitch(%3.0f),YawRate(%3.0f)", (double)target_roll/100, (double)target_pitch/100, (double)target_yaw_rate/100);
             }
 
         }
