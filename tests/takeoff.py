@@ -4,7 +4,6 @@ from pymavlink import mavutil
 
 # connect
 connection_string = '127.0.0.1:14550'
-# connection_string = '/dev/ttyS5'
 vehicle = connect(connection_string, wait_ready=False, baud=57600)
 
 # set the target altitude
@@ -12,11 +11,12 @@ targetAltitude = 15
 
 # Arming excecute -> Guided mode, armed = True
 print("Arming motors")
-vehicle.mode = VehicleMode("GUIDED_NOGPS")
+# vehicle.mode = VehicleMode("GUIDED_NOGPS")
+vehicle.mode = VehicleMode("GUIDED")
 vehicle.armed = True
 
 # Takeoff is enable?
-while not vehicle.armed or vehicle.mode.name != 'GUIDED_NOGPS':
+while not vehicle.armed or vehicle.mode.name != 'GUIDED':
     print("Vehicle not ready...")
     time.sleep(1)
 
