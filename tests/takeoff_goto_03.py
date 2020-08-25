@@ -3,8 +3,8 @@ from pymavlink import mavutil # Needed for command message definitions
 import time
 
 # connect
-# vehicle = connect('127.0.0.1:14550', wait_ready=True)
-vehicle = connect('tcp:127.0.0.1:5762', wait_ready=True)
+connection_string = '127.0.0.1:14550'
+vehicle = connect(connection_string, wait_ready=False, baud=57600)
 
 # set the target altitude
 targetAltitude = 15
